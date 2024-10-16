@@ -7,10 +7,19 @@ import useSWR from "swr";
 import { fetcher } from "../lib/client";
 import { SleepPanel } from "../components/dashboard/SleepPanel";
 import { ActivityPanel } from "../components/dashboard/ActivityPanel";
+import moment from "moment";
 
 const Home: NextPage = () => {
   const [userID, setUserID] = useState(null);
   const { data } = useSWR("/users/", fetcher);
+  const [startDate, setStartDate] = useState(
+    moment().subtract(7, "days").toISOString()
+  );
+  const [endDate, setEndDate] = useState(moment().toISOString());
+  const { data: glucose } = useSWR(
+    `/glucose/93a2293c-9e4a-4aaf-9a19-860191b7d667?start_date=${startDate}&end_date=${endDate}`,
+    fetcher
+  );
 
   const usersFiltered = data?.users ? data.users : [];
 
